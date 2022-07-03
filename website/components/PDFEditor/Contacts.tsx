@@ -1,6 +1,6 @@
 import { FC, useContext, ChangeEvent } from 'react';
 import { PDFContext, pdfDataActions } from '../../util/PDFProvider';
-import createKey from '../../util/CreateKey';
+import { createKey } from '../../util/functions';
 
 const PDFEditor: FC = () => {
 
@@ -24,7 +24,6 @@ const PDFEditor: FC = () => {
     }
 
     function handleContactAdd() {
-
         dispatch({
             type: pdfDataActions.ADD_CONTACTS,
             payload: {
