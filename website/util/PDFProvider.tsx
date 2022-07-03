@@ -1,8 +1,8 @@
-import { BlobProvider, StyleSheet } from "@react-pdf/renderer";
+import { StyleSheet, usePDF } from "@react-pdf/renderer";
 import { createContext, useReducer, useEffect, useState, FC, ReactNode } from "react";
 import PDFDoc from "./PDFDoc";
+import dynamic from "next/dynamic";
 import { Key, PDFDataItem, PDFDataState, PDFStyle, Contact, School, Activity, Skill, Award, SchoolItem } from "./PDFTypes";
-import NoSSR from "./NoSSR";
 
 // Pseudo-Redux implementation
 
@@ -243,14 +243,30 @@ export const PDFContext = createContext<PDFState>({
     blob: null
 });
 
+type UnwrappedProps = {
+    children: ReactNode,
+    data: PDFState
+}
+
 type Props = {
     children: ReactNode
+}
+
+const UnwrappedProvider: FC<UnwrappedProps> = ({ children, data }) => {
+    return (
+        <PDFContext.Provider value={data}>
+            {children}
+        </PDFContext.Provider>
+    )
 }
 
 const PDFProvider: FC<Props> = ({ children }) => {
 
     const [state, dispatch] = useReducer(stateReducer, pdfDataInitialState);
     const [style, setStyle] = useState(initialStyle);
+
+    const document = <PDFDoc data={state} styles={style} />;
+    const [instance, updateInstance] = usePDF({ document })
 
     useEffect(() => {
         const newStyle: PDFStyle = {
@@ -261,22 +277,19 @@ const PDFProvider: FC<Props> = ({ children }) => {
         setStyle(newStyle)
     }, [state.template])
 
-    return (
-        <NoSSR>
-            <BlobProvider document={<PDFDoc data={state} styles={style} />}>
-                {({ blob }) => (
-                    <PDFContext.Provider value={{
-                        ...state,
-                        dispatch,
-                        blob
-                    }}>
-                        {children}
-                    </PDFContext.Provider>
-                )}
-            </BlobProvider>
-        </NoSSR>
+    useEffect(updateInstance, [document]);
 
+    return (
+        <PDFContext.Provider value={{
+            ...state,
+            dispatch,
+            blob: instance.blob
+        }}>
+            {children}
+        </PDFContext.Provider>
     )
 }
 
-export default PDFProvider
+export default dynamic(() => Promise.resolve(PDFProvider), {
+    ssr: false,
+});

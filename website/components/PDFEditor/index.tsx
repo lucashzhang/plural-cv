@@ -1,21 +1,11 @@
-import { FC, useContext, ChangeEvent } from 'react';
-import { PDFContext, pdfDataActions } from '../../util/PDFProvider';
+import { FC } from 'react';
+import Contacts from './Contacts';
 
 const PDFEditor: FC = () => {
 
-    const { dispatch, template, contacts, education, work, activities, skills, awards } = useContext(PDFContext);
-
-    function handleChange(e: ChangeEvent<HTMLInputElement>) {
-        dispatch({
-            type: pdfDataActions.MODIFY_TEMPLATE,
-            payload: e.target.value
-        })
-    }
-
     return (
-        <div className="card w-full h-full rounded bg-slate-50">
-            <input onChange={handleChange}>
-            </input>
+        <div className="w-full h-full">
+            <Contacts />
         </div>
     )
 }

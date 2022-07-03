@@ -1,6 +1,7 @@
 import { FC, useRef, useContext } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import { PDFContext } from "../../util/PDFProvider";
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
@@ -10,8 +11,8 @@ type Prop = {
 
 const Viewer: FC<Prop> = ({ pageNumber }) => {
 
+    const puppetCanvas: any = useRef();
     const shadowCanvas: any = useRef();
-    const pdfCanvas: any = useRef();
     const { blob } = useContext(PDFContext);
 
     function cleanViewPort() {
@@ -24,21 +25,21 @@ const Viewer: FC<Prop> = ({ pageNumber }) => {
         });
     }
 
-    function renderShadow() {
-        shadowCanvas.current.width = pdfCanvas.current.width;
-        shadowCanvas.current.height = pdfCanvas.current.height;
-        shadowCanvas.current.style.width = pdfCanvas.current.style.width;
-        shadowCanvas.current.style.height = pdfCanvas.current.style.height;
-        shadowCanvas.current.getContext('2d').drawImage(pdfCanvas.current, 0, 0);
+    function renderPuppet() {
+        puppetCanvas.current.width = shadowCanvas.current.width;
+        puppetCanvas.current.height = shadowCanvas.current.height;
+        puppetCanvas.current.style.width = shadowCanvas.current.style.width;
+        puppetCanvas.current.style.height = shadowCanvas.current.style.height;
+        puppetCanvas.current.getContext('2d').drawImage(shadowCanvas.current, 0, 0);
     }
 
 
     return (
         <div className="rounded overflow-hidden relative">
             <Document file={blob} loading="" className="absolute top-0 left-0">
-                <Page pageNumber={pageNumber} width={500} onRenderSuccess={renderShadow} onLoadSuccess={cleanViewPort} canvasRef={pdfCanvas} />
+                <Page pageNumber={pageNumber} width={500} onRenderSuccess={renderPuppet} onLoadSuccess={cleanViewPort} canvasRef={shadowCanvas} />
             </Document>
-            <canvas ref={shadowCanvas} />
+            <canvas ref={puppetCanvas} />
         </div>
     )
 }
