@@ -6,7 +6,7 @@ services:
     volumes:
     - plural-cv-db:/var/lib/postgresql/data
     environment:
-      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_PASSWORD: flimsypassword
 volumes:
   plural-cv-db:
 
