@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Needed for auth
+// Needed for auth DONT TOUCH
 
 model Account {
   id                String  @id @default(cuid())

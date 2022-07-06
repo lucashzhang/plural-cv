@@ -1,34 +1,30 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# PluralCV
 
-## Getting Started
+Many people know that ideally you want to have customized Resumes for each place you apply to. But when you have dozens and dozens of places to apply to, that gets tiring quick. First you have to keep track of which CVs went where. And then you have the problem of making that many Resumes. The changes needed may be minor, but the thought that goes into it can become super tedious. The proposal is to create a Resume Builder with the ability to automatically build Resumes based on the job title and description.
 
-First, run the development server:
+### Stage 1:
+Build Resume Building Site. This includes publishing and sharing resumes with at least one template option
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+### Stage 2:
+Machine Learning Algorithm trained with [this](https://www.kaggle.com/datasets/PromptCloudHQ/us-technology-jobs-on-dicecom) dataset. This is probably a NLP multi classification problem. Just need to get around to labeling/cleaning this dataset and learning how to do the ML part :P
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Proposed Tech Stack
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+Decided/Mostly Decided
+ - Frontend: NextJS
+ - Auth: NextAuth.js + OAuth Providers
+ - Backend: NextJS API Routes
+ - Middleware/ORM: Prisma
+ - Database: Some Postgres-like or MySQL SQL Database
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+Undecided
+ - ML Hosting (Google Cloud ML Functions? Local?)
+ - Storage Bucket for uploading PDF
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+Other Technologies of Note
+ - Framer Motion: Super nice ReactJS animation library
+ - React-Query: Allows for the database to be a pseudo model for the application with minimum effort.
 
-## Learn More
+The goal of this project's architecture is to be ultra portable. NextJS, Prisma, and NextAuth can be hosted by practically anything, even serverless functions. A cloud/managed Postgres (or Postgres-like such as CockroachDB) database compatible with Prisma and NextAuth is also very common.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+The current plan is to host on Netlify and use something like serverless CockroachDB or PlanetScale. This plan gives this project the possibility to immediately scale up enormously without needing to reconfigure the architecture. Money is a different problem, but if no one is using it, this is should all be free too.
