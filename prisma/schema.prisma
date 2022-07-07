@@ -39,17 +39,20 @@ model Session {
 }
 
 model User {
-  id            String      @id @default(cuid())
+  id            String       @id @default(cuid())
   name          String?
-  email         String?     @unique
+  email         String?      @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
   resumes       Resume[]
-  skills        UserSkill[]
+  skills        Skill[]
+  activites     Activity[]
   contacts      Contact[]
+  awards        Award[]
   education     Education[]
+  experience    Experience[]
 }
 
 model VerificationToken {
@@ -63,76 +66,44 @@ model VerificationToken {
 // Skill Related
 
 model Skill {
-  id        String      @id @default(cuid())
-  name      String
-  UserSkill UserSkill[]
-  Tags      SkillTag[]
+  id          String        @id @default(cuid())
+  name        String
+  User        User[]
+  Tags        SkillTag[]
+  ResumeSkill ResumeSkill[]
 }
 
 model ResumeSkill {
-  id       String    @id @default(cuid())
   resumeId String
   skillId  String
-  order    Int       @default(autoincrement())
-  Resume   Resume    @relation(fields: [resumeId], references: [id], onDelete: Cascade)
-  Skill    UserSkill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  order    Int    @default(autoincrement())
+  Resume   Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  Skill    Skill  @relation(fields: [skillId], references: [id], onDelete: Cascade)
 
-  @@unique([resumeId, skillId])
-}
-
-model UserSkill {
-  id      String        @id @default(cuid())
-  skillId String
-  userId  String
-  Skill   Skill         @relation(fields: [skillId], references: [id], onDelete: Cascade)
-  User    User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Resumes ResumeSkill[]
-
-  @@unique([skillId, userId])
-}
-
-model SkillType {
-  id        String     @id @default(cuid())
-  Name      String     @unique
-  SkillTags SkillTag[]
+  @@id([resumeId, skillId])
 }
 
 model SkillTag {
-  id      String    @id @default(cuid())
-  typeId  String
-  skillId String
-  Skill   Skill     @relation(fields: [skillId], references: [id], onDelete: Cascade)
-  Type    SkillType @relation(fields: [typeId], references: [id], onDelete: Cascade)
-
-  @@unique([typeId, skillId])
+  label  String  @id @default(cuid())
+  Skills Skill[]
 }
 
 // Contact Related
 
 model Contact {
-  id     String          @id @default(cuid())
+  id     String   @id @default(cuid())
   userId String
   data   String
-  User   User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Resume ResumeContact[]
+  User   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Resume Resume[]
 
   @@unique([userId, data])
-}
-
-model ResumeContact {
-  id        String  @id @default(cuid())
-  contactId String
-  resumeId  String
-  Contact   Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
-  Resume    Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
-
-  @@unique([contactId, resumeId])
 }
 
 // Education Related
 
 model Education {
-  id            String            @id @default(cuid())
+  id            String    @id @default(cuid())
   userId        String
   schoolName    String
   concentration String?
@@ -141,18 +112,8 @@ model Education {
   description   String
   Courses       Course[]
   Honors        Honor[]
-  Resume        ResumeEducation[]
-  User          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model ResumeEducation {
-  id          String    @id @default(cuid())
-  resumeId    String
-  educationId String
-  Resume      Resume    @relation(fields: [resumeId], references: [id], onDelete: Cascade)
-  Education   Education @relation(fields: [educationId], references: [id], onDelete: Cascade)
-
-  @@unique([resumeId, educationId])
+  Resume        Resume[]
+  User          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Course {
@@ -173,77 +134,54 @@ model Honor {
 // Experience Related
 
 model Experience {
-  id               String             @id @default(cuid())
-  userId           String
-  label            String
-  position         String
-  start            DateTime
-  end              DateTime?
-  ResumeExperience ResumeExperience[]
-}
-
-model ResumeExperience {
-  id           String     @id @default(cuid())
-  resumeId     String
-  experienceId String
-  Resume       Resume     @relation(fields: [resumeId], references: [id], onDelete: Cascade)
-  Experience   Experience @relation(fields: [experienceId], references: [id], onDelete: Cascade)
-
-  @@unique([resumeId, experienceId])
+  id       String    @id @default(cuid())
+  userId   String
+  label    String
+  position String
+  start    DateTime
+  end      DateTime?
+  Resume   Resume[]
+  User     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // Activity Related
 
 model Activity {
-  id             String           @id @default(cuid())
-  label          String
-  start          DateTime
-  end            DateTime?
-  ResumeActivity ResumeActivity[]
-}
-
-model ResumeActivity {
-  id         String   @id @default(cuid())
-  activityId String
-  resumeId   String
-  Activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
-  Resume     Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
-
-  @@unique([activityId, resumeId])
+  id     String    @id @default(cuid())
+  userId String
+  label  String
+  start  DateTime
+  end    DateTime?
+  Resume Resume[]
+  User   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // Awards Related
 
 model Award {
-  id          String        @id @default(cuid())
-  label       String
-  ResumeAward ResumeAward[]
-}
-
-model ResumeAward {
-  id       String @id @default(cuid())
-  awardId  String
-  resumeId String
-  Award    Award  @relation(fields: [awardId], references: [id], onDelete: Cascade)
-  Resume   Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  id     String   @id @default(cuid())
+  userId String
+  label  String
+  Resume Resume[]
+  User   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // Resume Related
 
 model Resume {
-  id         String             @id @default(cuid())
+  id         String        @id @default(cuid())
   name       String?
   ownerId    String
   templateId String
   public     Boolean
-  Owner      User               @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  Template   Template           @relation(fields: [templateId], references: [id])
-  Contacts   ResumeContact[]
+  Owner      User          @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  Template   Template      @relation(fields: [templateId], references: [id])
+  Contacts   Contact[]
   Skills     ResumeSkill[]
-  Education  ResumeEducation[]
-  Experience ResumeExperience[]
-  Activity   ResumeActivity[]
-  Awards     ResumeAward[]
+  Education  Education[]
+  Experience Experience[]
+  Activity   Activity[]
+  Awards     Award[]
 }
 
 model Template {
