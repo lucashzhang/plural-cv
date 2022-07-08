@@ -170,11 +170,11 @@ model Award {
 
 model Resume {
   id         String        @id @default(cuid())
-  name       String?
-  ownerId    String
+  name       String
+  userId     String
   templateId String
   public     Boolean
-  Owner      User          @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  Owner      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   Template   Template      @relation(fields: [templateId], references: [id])
   Contacts   Contact[]
   Skills     ResumeSkill[]
