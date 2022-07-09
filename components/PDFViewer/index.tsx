@@ -1,12 +1,12 @@
 import { FC, useRef, useContext, useEffect } from "react";
-import { Document, Page, pdfjs } from "react-pdf";
+import { Document, Page } from "react-pdf/dist/esm/entry.webpack5";
 import { usePDF, StyleSheet } from "@react-pdf/renderer";
 import { PDFContext } from "../../util/PDFProvider";
 import PDFDoc from "../../util/PDFDoc";
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import { PDFStyle } from "../../util/PDFTypes";
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+// pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 type Prop = {
     pageNumber: number
