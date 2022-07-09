@@ -1,5 +1,4 @@
 import { createContext, useReducer, FC, ReactNode } from "react";
-import dynamic from "next/dynamic";
 import { Key, PDFDataItem, PDFDataState, Contact, School, Activity, Skill, Award, SchoolItem } from "./PDFTypes";
 
 // Pseudo-Redux implementation

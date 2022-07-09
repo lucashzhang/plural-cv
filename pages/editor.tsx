@@ -1,7 +1,11 @@
-import type { NextPage } from 'next'
+import type { NextPage } from 'next';
+import dynamic from 'next/dynamic';
 import PDFProvider from '../util/PDFProvider';
 import PDFEditor from '../components/PDFEditor';
-import PDFViewer from '../components/PDFViewer';
+
+const PDFViewer = dynamic(import('../components/PDFViewer'), {
+  ssr: false
+})
 
 const Home: NextPage = () => {
 
