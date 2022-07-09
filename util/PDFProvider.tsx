@@ -1,8 +1,6 @@
-import { StyleSheet, usePDF } from "@react-pdf/renderer";
-import { createContext, useReducer, useEffect, useState, FC, ReactNode } from "react";
-import PDFDoc from "./PDFDoc";
+import { createContext, useReducer, FC, ReactNode } from "react";
 import dynamic from "next/dynamic";
-import { Key, PDFDataItem, PDFDataState, PDFStyle, Contact, School, Activity, Skill, Award, SchoolItem } from "./PDFTypes";
+import { Key, PDFDataItem, PDFDataState, Contact, School, Activity, Skill, Award, SchoolItem } from "./PDFTypes";
 
 // Pseudo-Redux implementation
 
@@ -89,11 +87,6 @@ const pdfDataInitialState: PDFDataState = {
     skills: [],
     awards: []
 }
-
-const initialStyle: PDFStyle = StyleSheet.create({
-    page: {},
-    header: {}
-})
 
 function removeHelper(key: Key): (item: PDFDataItem) => boolean {
     return (item: PDFDataItem): boolean => item.key !== key;
@@ -233,63 +226,30 @@ function stateReducer(state: PDFDataState, action: PDFAction): PDFDataState {
 }
 
 interface PDFState extends PDFDataState {
-    blob: Blob | null,
     dispatch: (action: PDFAction) => void
 }
 
 export const PDFContext = createContext<PDFState>({
     ...pdfDataInitialState,
     dispatch: (_: PDFAction) => { },
-    blob: null
 });
-
-type UnwrappedProps = {
-    children: ReactNode,
-    data: PDFState
-}
 
 type Props = {
     children: ReactNode
 }
 
-const UnwrappedProvider: FC<UnwrappedProps> = ({ children, data }) => {
-    return (
-        <PDFContext.Provider value={data}>
-            {children}
-        </PDFContext.Provider>
-    )
-}
-
 const PDFProvider: FC<Props> = ({ children }) => {
 
     const [state, dispatch] = useReducer(stateReducer, pdfDataInitialState);
-    const [style, setStyle] = useState(initialStyle);
-
-    const document = <PDFDoc data={state} styles={style} />;
-    const [instance, updateInstance] = usePDF({ document })
-
-    useEffect(() => {
-        const newStyle: PDFStyle = {
-            page: {},
-            header: {}
-        }
-
-        setStyle(newStyle)
-    }, [state.template])
-
-    useEffect(updateInstance, [document]);
 
     return (
         <PDFContext.Provider value={{
             ...state,
             dispatch,
-            blob: instance.blob
         }}>
             {children}
         </PDFContext.Provider>
     )
 }
 
-export default dynamic(() => Promise.resolve(PDFProvider), {
-    ssr: false,
-});
+export default PDFProvider;
