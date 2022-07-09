@@ -15,7 +15,7 @@ type Prop = {
 const Viewer: FC<Prop> = ({ pageNumber }) => {
 
     const puppetCanvas: any = useRef();
-    const shadowCanvas: any = useRef();
+    // const shadowCanvas: any = useRef();
     // const { template, contacts, education, work, activities, skills, awards } = useContext(PDFContext);
     // const pdfState = {
     //     template,
