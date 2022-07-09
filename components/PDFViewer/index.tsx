@@ -1,6 +1,6 @@
-import { FC, useRef, useContext, useEffect } from "react";
+import { FC, useRef, useContext } from "react";
 import { Document, Page } from "react-pdf/dist/esm/entry.webpack5";
-import { usePDF, StyleSheet } from "@react-pdf/renderer";
+import { StyleSheet } from "@react-pdf/renderer";
 import { PDFContext } from "../../util/PDFProvider";
 import PDFDoc from "../../util/PDFDoc";
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
@@ -32,7 +32,7 @@ const Viewer: FC<Prop> = ({ pageNumber }) => {
     })
     const doc = <PDFDoc data={pdfState} styles={initialStyle} />
 
-    const [instance, setInstance] = usePDF({ document: doc })
+    // const [instance, setInstance] = usePDF({ document: doc })
 
     function cleanViewPort() {
         const textLayers = document.querySelectorAll<HTMLElement>(".react-pdf__Page__textContent");
@@ -52,11 +52,11 @@ const Viewer: FC<Prop> = ({ pageNumber }) => {
         puppetCanvas.current.getContext('2d').drawImage(shadowCanvas.current, 0, 0);
     }
 
-    useEffect(setInstance, [doc]);
+    // useEffect(setInstance, [doc]);
 
     return (
         <div className="rounded overflow-hidden relative">
-            <Document file={instance.blob} loading="" className="absolute top-0 left-0">
+            <Document file='https://raw.githubusercontent.com/lucashzhang/COMP562-Final-Project/main/562_Final_Project.pdf' loading="" className="absolute top-0 left-0">
                 <Page pageNumber={pageNumber} width={500} onRenderSuccess={renderPuppet} onLoadSuccess={cleanViewPort} canvasRef={shadowCanvas} />
             </Document>
             <canvas ref={puppetCanvas} />
