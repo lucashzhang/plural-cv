@@ -1,10 +1,9 @@
-import { FC, useRef, useContext, useEffect } from "react";
+import { FC, useRef, useContext, useEffect, useState } from "react";
 import { Document, Page } from "react-pdf/dist/esm/entry.webpack5";
-import { StyleSheet } from "@react-pdf/renderer";
+// import { StyleSheet } from "@react-pdf/renderer";
 import { PDFContext } from "../../util/PDFProvider";
 // import PDFDoc from "../../util/PDFDoc";
 // import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
-import { PDFStyle } from "../../util/PDFTypes";
 
 // pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
@@ -17,22 +16,17 @@ const Viewer: FC<Prop> = ({ pageNumber }) => {
     const puppetCanvas: any = useRef();
     const shadowCanvas: any = useRef();
     const { template, contacts, education, work, activities, skills, awards } = useContext(PDFContext);
+    const [blob, setBlob] = useState<Blob | null>();
 
 
     useEffect(() => {
-        const initialStyle: PDFStyle = StyleSheet.create({
-            page: {},
-            header: {}
+        fetch('/api/resume/pdf').then((data) => {
+            return data.blob()
+        }).then((pdfBlob) => {
+            setBlob(pdfBlob);
         })
-        const pdfState = {
-            template,
-            contacts,
-            education,
-            work,
-            activities,
-            skills,
-            awards
-        }
+
+        
         // const doc = <PDFDoc data={pdfState} styles={initialStyle} />
     }, [template, contacts, education, work, activities, skills, awards])
 
@@ -61,7 +55,7 @@ const Viewer: FC<Prop> = ({ pageNumber }) => {
 
     return (
         <div className="rounded overflow-hidden relative">
-            <Document file='https://raw.githubusercontent.com/lucashzhang/COMP562-Final-Project/main/562_Final_Project.pdf' loading="" className="absolute top-0 left-0">
+            <Document file={blob} loading="" className="absolute top-0 left-0">
                 <Page pageNumber={pageNumber} width={500} onRenderSuccess={renderPuppet} onLoadSuccess={cleanViewPort} canvasRef={shadowCanvas} />
             </Document>
             <canvas ref={puppetCanvas} width="500" height="500" />

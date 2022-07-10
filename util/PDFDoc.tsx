@@ -1,21 +1,14 @@
 import type { FC } from "react";
-import type { PDFProps, PDFStyle } from "./PDFTypes";
-import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+import { Document, Page, Text, View } from '@react-pdf/renderer';
 
 
-const PDFDoc: FC<PDFProps> = ({ data, styles }) => {
-    const { contacts, education, work, activities, skills, awards } = data;
+const PDFDoc: FC = () => {
 
     return (
         <Document>
-            <Page size="A4" style={styles.page}>
-                <View style={styles.header}>
+            <Page size="A4">
+                <View>
                     <Text>Lucas Zhang</Text>
-                </View>
-                <View style={styles.header}>
-                    {contacts.map((contact) => (
-                        <Text key={contact.key}>{contact.item}</Text>
-                    ))}
                 </View>
             </Page>
         </Document>
