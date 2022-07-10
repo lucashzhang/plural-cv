@@ -33,7 +33,7 @@ const Viewer: FC<Prop> = ({ pageNumber }) => {
             skills,
             awards
         }
-        const doc = <PDFDoc data={pdfState} styles={initialStyle} />
+        // const doc = <PDFDoc data={pdfState} styles={initialStyle} />
     }, [template, contacts, education, work, activities, skills, awards])
 
 
