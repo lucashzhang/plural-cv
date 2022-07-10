@@ -1,6 +1,6 @@
 import { FC, useRef, useContext, useEffect } from "react";
 import { Document, Page } from "react-pdf/dist/esm/entry.webpack5";
-// import { StyleSheet } from "@react-pdf/renderer";
+import { StyleSheet } from "@react-pdf/renderer";
 import { PDFContext } from "../../util/PDFProvider";
 // import PDFDoc from "../../util/PDFDoc";
 // import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
@@ -20,10 +20,10 @@ const Viewer: FC<Prop> = ({ pageNumber }) => {
 
 
     useEffect(() => {
-        const initialStyle: PDFStyle = {
+        const initialStyle: PDFStyle = StyleSheet.create({
             page: {},
             header: {}
-        }
+        })
         const pdfState = {
             template,
             contacts,
